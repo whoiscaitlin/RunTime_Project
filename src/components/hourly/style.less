@@ -1,0 +1,42 @@
+//style for hourly forecast component
+@import '~style/helpers';
+
+.container {
+	display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+	justify-content: center;
+  width: 414px;
+  margin-bottom: 5%;
+
+}
+
+.scroll::-webkit-scrollbar {
+  display: none; }
+
+.child{
+	display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  height: 110px;
+  width: 75px;
+  transition: all 0.3s ease-in-out;
+  border: 1px solid black;
+}
+
+.text {
+  line-height: 170%;
+  height: 30%;
+  width: 100%;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.icon {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  line-height: 240%;
+  height: 40%;
+}
