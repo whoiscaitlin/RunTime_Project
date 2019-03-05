@@ -9,9 +9,9 @@ export default class Hourly extends Component{
 
   return(
     <div class={style.child}>
-      <div class={style.text}>{props.temp}</div>
+      <div class={style.text}>{props.time}</div>
       <div class={style.icon}>{props.icon}</div>
-      <div class={style.text}>{props.label}</div>
+      <div class={style.text}>{props.temp}</div>
     </div>
     );
   }

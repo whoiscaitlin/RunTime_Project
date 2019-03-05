@@ -4,11 +4,11 @@
 .container {
 	display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-	justify-content: center;
-  width: 414px;
+	overflow: auto;
+  //overflow-x: auto;
+  //-webkit-overflow-scrolling: touch;
+  //-ms-overflow-style: -ms-autohiding-scrollbar;
+	justify-content: flex-start;
   margin-bottom: 5%;
 
 }
@@ -19,6 +19,7 @@
 .child{
 	display: flex;
   flex: 0 0 auto;
+	overflow: scroll;
   flex-direction: column;
   height: 110px;
   width: 75px;

@@ -20,29 +20,23 @@ import Current from '../current';
 import Current_Icon from '../current_icon';
 import Details from '../details';
 
-var apiKey = "Nh8pQGqYkJW2eGdcGfXjTf0hbUPVwMGw";
-var locationKey = "328328";
-var language = "en";
-var dummy_data = {"coord":{"lon":139,"lat":35},
-									"sys":{"country":"JP","sunrise":1369769524,"sunset":1369821049},
-									"weather":[{"id":804,"main":"clouds","description":"overcast clouds","icon":"04n"}],
-									"main":{"temp":289.5,"humidity":89,"pressure":1013,"temp_min":287.04,"temp_max":292.04},
-									"wind":{"speed":7.31,"deg":187.002},
-									"rain":{"3h":0},
-									"clouds":{"all":92},
-									"dt":1369824698,
-									"id":1851632,
-									"name":"Shuzenji",
-									"cod":200}
+var appid = "114dd7998fd50a1abd1c74bf1d59f1f1";
 
-var loc = dummy_data['name'];
-var temp_c = dummy_data['main']['temp'];
-var conditions = dummy_data['weather']['0']['description'];
-var humidity = dummy_data['main']['humidity'];
-var day_1 = "monday";
-var day_2 = "tuesday";
-var day_3 = "wednesady";
-var h_l = "73/52";
+//takes in a unix_date and returns an abbreviated day of the week for display in three day extended forcast
+function toDate(unix_date){
+		var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+		var date = new Date(unix_date*1000);
+
+		return (daysOfWeek[date.getDay()]);
+}
+
+//takes in unix_date and returns an hourly time for display in hourly forcast
+function toHour(unix_date){
+		let date = new Date(unix_date*1000);
+		let hours = date.getHours();
+
+		return (hours);
+}
 
 export default class Iphone extends Component {
 //var Iphone = React.createClass({
@@ -50,76 +44,110 @@ export default class Iphone extends Component {
 	// a constructor with initial set states
 	constructor(props){
 		super(props);
-		// temperature state
-		this.state.temp = "";
-		// button display state
-		this.setState({ display: true });
+		// temperature + location state
+		this.state = {
+			error: null,
+      isLoaded: false,
+
+			location: "London",
+			time_zone: "",
+			current: [],
+			hourly: [],
+			hourly_1: [],
+			hourly_2: [],
+			hourly_3: [],
+			hourly_4: [],
+			hourly_5: [],
+			hourly_6: [],
+			hourly_7: [],
+			hourly_8: [],
+			hourly_9: [],
+			hourly_10: [],
+			hourly_11: [],
+			hourly_12: [],
+			daily: [],
+			one_d: [],
+			two_d: [],
+			three_d: [],
+		};
 	}
 
-	// a call to fetch weather data via wunderground
-
-	fetchWeatherData = () => {
-		// API URL with a structure of : ttp://api.wunderground.com/api/key/feature/q/country-code/city.json
-		var url =
-		http: "dataservice.accuweather.com/forecasts/v1/daily/1day/328328?apikey=Nh8pQGqYkJW2eGdcGfXjTf0hbUPVwMGw&details=true"
-		$.ajax({
-			url: url,
-			dataType: "jsonp",
-			success : this.parseResponse,
-			error : function(req, err){ console.log('API call failed ' + err); }
-		})
-		// once the data grabbed, hide the button
-		this.setState({ display: false });
-	}
-
+	componentDidMount(){
+		// call to get current conditions
+		fetch("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/8a9427f6abf1245ee5a6e6f378211c11/51.523795,-0.034468")
+		.then(res => res.json())
+		.then(
+			(result) => {
+				this.setState({
+					isLoaded: true,
+					time_zone: result.timezone,
+					current: result.currently,
+					hourly: result.hourly,
+					hourly_1: result.hourly.data[1],
+					hourly_2: result.hourly.data[2],
+					hourly_3: result.hourly.data[3],
+					hourly_4: result.hourly.data[4],
+					hourly_5: result.hourly.data[5],
+					hourly_6: result.hourly.data[6],
+					hourly_7: result.hourly.data[7],
+					hourly_8: result.hourly.data[8],
+					hourly_9: result.hourly.data[9],
+					hourly_10: result.hourly.data[10],
+					hourly_11: result.hourly.data[11],
+					hourly_12: result.hourly.data[12],
+					daily: result.daily,
+					one_d: result.daily.data[1],
+					two_d: result.daily.data[2],
+					three_d: result.daily.data[3],
+				});
+			},
+			(error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+    	)
+  	}
 
 	// the main render method for the iphone component
 	render() {
 		// check if temperature data is fetched, if so add the sign styling to the page
-		const tempStyles = this.state.temp ? `${style.temperature} ${style.filled}` : style.temperature;
-
+		let test = this.state.hourly.data;
+		console.log(test);
 		// display all weather data
 		return (
 			<div class={ style.container }>
+				<div class={style.header}
+					<Button/>
+					</div>
 				<div class={style.header}>
 					<Current_Icon cond={"&&"}/>
-					<Current location={loc} temp={temp_c}/>
+					<Current location={this.state.name} temp={this.state.current["temperature"]+" C"}/>
 					</div>
 				<div class={style_details.container}>
-					<Details cond={humidity+'%'} feature={"Humidity"}/>
-					<Details cond={'4.3'} feature={"U.V. Index"}/>
-					<Details cond={'3.4'} feature={"Wind Speed"}/>
+					<Details cond={this.state.current["humidity"]+"%"} feature={"Humidity"}/>
+					<Details cond={this.state.current["uvIndex"]} feature={"U.V. Index"}/>
+					<Details cond={this.state.current["windSpeed"]} feature={"Wind Speed"}/>
 					</div>
 				<div class={style_hourly.container}>
-					<Hourly temp={"1"} icon={"&&"} label={"7"} />
-					<Hourly temp={"2"} icon={"&&"} label={"7"} />
-					<Hourly temp={"3"} icon={"&&"} label={"7"} />
-					<Hourly temp={"4"} icon={"&&"} label={"7"} />
-					<Hourly temp={"5"} icon={"&&"} label={"7"} />
-					<Hourly temp={"6"} icon={"&&"} label={"7"} />
-					<Hourly temp={"7"} icon={"&&"} label={"7"} />
-					<Hourly temp={"8"} icon={"&&"} label={"7"} />
-					<Hourly temp={"9"} icon={"&&"} label={"7"} />
-					<Hourly temp={"10"} icon={"&&"} label={"7"} />
-					<Hourly temp={"11"} icon={"&&"} label={"7"} />
-					<Hourly temp={"12"} icon={"&&"} label={"7"} />
-					<Hourly temp={"13"} icon={"&&"} label={"7"} />
-					<Hourly temp={"14"} icon={"&&"} label={"7"} />
-					<Hourly temp={"15"} icon={"&&"} label={"7"} />
-					<Hourly temp={"16"} icon={"&&"} label={"7"} />
-					<Hourly temp={"17"} icon={"&&"} label={"7"} />
-					<Hourly temp={"18"} icon={"&&"} label={"7"} />
-					<Hourly temp={"19"} icon={"&&"} label={"7"} />
-					<Hourly temp={"20"} icon={"&&"} label={"7"} />
-					<Hourly temp={"21"} icon={"&&"} label={"7"} />
-					<Hourly temp={"22"} icon={"&&"} label={"7"} />
-					<Hourly temp={"23"} icon={"&&"} label={"7"} />
-					<Hourly temp={"24"} icon={"&&"} label={"7"} />
+					<Hourly time={toHour(this.state.hourly_1.time)} icon={this.state.hourly_1.icon} temp={this.state.hourly_1.temperature} />
+					<Hourly time={toHour(this.state.hourly_2.time)} icon={this.state.hourly_2.icon} temp={this.state.hourly_2.temperature} />
+					<Hourly time={toHour(this.state.hourly_3.time)} icon={this.state.hourly_3.icon} temp={this.state.hourly_3.temperature} />
+					<Hourly time={toHour(this.state.hourly_4.time)} icon={this.state.hourly_4.icon} temp={this.state.hourly_4.temperature} />
+					<Hourly time={toHour(this.state.hourly_5.time)} icon={this.state.hourly_5.icon} temp={this.state.hourly_5.temperature} />
+					<Hourly time={toHour(this.state.hourly_6.time)} icon={this.state.hourly_6.icon} temp={this.state.hourly_6.temperature} />
+					<Hourly time={toHour(this.state.hourly_7.time)} icon={this.state.hourly_7.icon} temp={this.state.hourly_7.temperature} />
+					<Hourly time={toHour(this.state.hourly_8.time)} icon={this.state.hourly_8.icon} temp={this.state.hourly_8.temperature} />
+					<Hourly time={toHour(this.state.hourly_9.time)} icon={this.state.hourly_9.icon} temp={this.state.hourly_9.temperature} />
+					<Hourly time={toHour(this.state.hourly_10.time)} icon={this.state.hourly_10.icon} temp={this.state.hourly_10.temperature} />
+					<Hourly time={toHour(this.state.hourly_11.time)} icon={this.state.hourly_11.icon} temp={this.state.hourly_11.temperature} />
+					<Hourly time={toHour(this.state.hourly_12.time)} icon={this.state.hourly_12.icon} temp={this.state.hourly_12.temperature} />
 					</div>
 				<div class={style_daily.container}>
-					<Daily day={day_1} icon={"&&"} highlow={h_l}/>
-					<Daily day={day_2} icon={"&&"} highlow={h_l}/>
-					<Daily day={day_3} icon={"&&"} highlow={h_l}/>
+					<Daily day={toDate(this.state.one_d.time)} icon={this.state.one_d.icon} highlow={this.state.one_d.temperatureHigh+"/"+this.state.one_d.temperatureLow}/>
+					<Daily day={toDate(this.state.two_d.time)} icon={this.state.two_d.icon} highlow={this.state.two_d.temperatureHigh+"/"+this.state.two_d.temperatureLow}/>
+					<Daily day={toDate(this.state.three_d.time)} icon={this.state.three_d.icon} highlow={this.state.three_d.temperatureHigh+"/"+this.state.three_d.temperatureLow}/>
 				</div>
 			</div>
 		);
