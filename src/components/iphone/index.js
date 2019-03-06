@@ -2,7 +2,7 @@
 import { h, render, Component } from 'preact';
 // import stylesheets
 import style from './style';
-import style_iphone from '../button/style_iphone';
+import style_button from '../button/style_iphone';
 import style_hourly from '../hourly/style';
 import style_daily from '../daily/style_daily';
 import style_current from '../current/style_current';
@@ -19,8 +19,12 @@ import Daily from '../daily';
 import Current from '../current';
 import Current_Icon from '../current_icon';
 import Details from '../details';
+//import Form from 'preact-forms-helper';
 
 var appid = "114dd7998fd50a1abd1c74bf1d59f1f1";
+var app_id = "&app_id=oemh7PZ6fAqbOwEadoY0";
+var app_code = "&app_code=f9v_eLOLFrlIApivB5_7gA";
+var icon_choices = {"clear-day": "fas fa-sun",  "clear-night": "fas fa-moon", "rain": "fas fa-cloud-rain", "snow": "far fa-snowflake", "sleet":"fas fa-cloud-showers-heavy" , "wind": "fas fa-wind", "fog":"fas fa-water", "cloudy":"fas fa-cloud", "partly-cloudy-day": "fas fa-cloud-sun", "partly-cloudy-night":"fas fa-cloud-moon"}
 
 //takes in a unix_date and returns an abbreviated day of the week for display in three day extended forcast
 function toDate(unix_date){
@@ -38,6 +42,13 @@ function toHour(unix_date){
 		return (hours);
 }
 
+//takes in a string weather description and returns the right kind of icon to represent it
+function whichIcon(icon){
+
+	return icon_choices[icon]
+
+}
+
 export default class Iphone extends Component {
 //var Iphone = React.createClass({
 
@@ -48,10 +59,11 @@ export default class Iphone extends Component {
 		this.state = {
 			error: null,
       isLoaded: false,
-
+			lat_long: "51.50643,-0.12721",
 			location: "London",
 			time_zone: "",
 			current: [],
+			humidity: "",
 			hourly: [],
 			hourly_1: [],
 			hourly_2: [],
@@ -70,11 +82,20 @@ export default class Iphone extends Component {
 			two_d: [],
 			three_d: [],
 		};
+
+		//data binding for location input from user
+		this.handleData = this.handleData.bind(this);
 	}
 
-	componentDidMount(){
+	componentWillMount(){
 		// call to get current conditions
-		fetch("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/8a9427f6abf1245ee5a6e6f378211c11/51.523795,-0.034468")
+			this.fetchWeatherData();
+  	}
+
+	fetchWeatherData(){
+
+		fetch("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/8a9427f6abf1245ee5a6e6f378211c11/"
+		+this.state.lat_long)
 		.then(res => res.json())
 		.then(
 			(result) => {
@@ -82,6 +103,7 @@ export default class Iphone extends Component {
 					isLoaded: true,
 					time_zone: result.timezone,
 					current: result.currently,
+					humidity: result.currently["humidity"],
 					hourly: result.hourly,
 					hourly_1: result.hourly.data[1],
 					hourly_2: result.hourly.data[2],
@@ -108,25 +130,37 @@ export default class Iphone extends Component {
           });
         }
     	)
-  	}
+		}
 
+
+	handleData(data) {
+			//set internal location data from input
+			//console.log(data);
+	    this.setState({
+	     	lat_long: data[0],
+				location: data[1]
+	    });
+
+			this.fetchWeatherData();
+
+	 }
 	// the main render method for the iphone component
 	render() {
 		// check if temperature data is fetched, if so add the sign styling to the page
-		let test = this.state.hourly.data;
-		console.log(test);
+		console.log(this.state.lat_long);
+
 		// display all weather data
 		return (
 			<div class={ style.container }>
-				<div class={style.header}
-					<Button/>
+				<div class={style_button.container}>
+					<Button handlerFromParent={this.handleData} />
 					</div>
 				<div class={style.header}>
 					<Current_Icon cond={"&&"}/>
-					<Current location={this.state.name} temp={this.state.current["temperature"]+" C"}/>
+					<Current location={this.state.location} temp={this.state.current["temperature"]+" C"}/>
 					</div>
 				<div class={style_details.container}>
-					<Details cond={this.state.current["humidity"]+"%"} feature={"Humidity"}/>
+					<Details cond={this.state.humidity} feature={"Humidity"}/>
 					<Details cond={this.state.current["uvIndex"]} feature={"U.V. Index"}/>
 					<Details cond={this.state.current["windSpeed"]} feature={"Wind Speed"}/>
 					</div>
