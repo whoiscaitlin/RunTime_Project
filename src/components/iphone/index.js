@@ -8,6 +8,8 @@ import style_daily from '../daily/style_daily';
 import style_current from '../current/style_current';
 import style_c_icon from '../current_icon/style_current_icon';
 import style_details from '../details/style_details';
+import style_time from '../time/style_time';
+import {IoIosCloudy, IoIosCloudyNight, IoIosRainy, IoIosSunny, IoIosSnowy, IoIosPartlySunny, IoIosMoon} from 'preact-icons/lib/io';
 
 // import jquery for API calls
 import $ from 'jquery';
@@ -19,12 +21,14 @@ import Daily from '../daily';
 import Current from '../current';
 import Current_Icon from '../current_icon';
 import Details from '../details';
-//import Form from 'preact-forms-helper';
+import Icon from '../icon';
+import Time from '../time'
+
+
 
 var appid = "114dd7998fd50a1abd1c74bf1d59f1f1";
 var app_id = "&app_id=oemh7PZ6fAqbOwEadoY0";
 var app_code = "&app_code=f9v_eLOLFrlIApivB5_7gA";
-var icon_choices = {"clear-day": "fas fa-sun",  "clear-night": "fas fa-moon", "rain": "fas fa-cloud-rain", "snow": "far fa-snowflake", "sleet":"fas fa-cloud-showers-heavy" , "wind": "fas fa-wind", "fog":"fas fa-water", "cloudy":"fas fa-cloud", "partly-cloudy-day": "fas fa-cloud-sun", "partly-cloudy-night":"fas fa-cloud-moon"}
 
 //takes in a unix_date and returns an abbreviated day of the week for display in three day extended forcast
 function toDate(unix_date){
@@ -156,8 +160,8 @@ export default class Iphone extends Component {
 					<Button handlerFromParent={this.handleData} />
 					</div>
 				<div class={style.header}>
-					<Current_Icon cond={"&&"}/>
-					<Current location={this.state.location} temp={this.state.current["temperature"]+" C"}/>
+					<Current_Icon cond={this.state.current["icon"]}/>
+					<Current location={this.state.location} temp={this.state.current["temperature"]+" F"}/>
 					</div>
 				<div class={style_details.container}>
 					<Details cond={this.state.humidity} feature={"Humidity"}/>
@@ -182,6 +186,9 @@ export default class Iphone extends Component {
 					<Daily day={toDate(this.state.one_d.time)} icon={this.state.one_d.icon} highlow={this.state.one_d.temperatureHigh+"/"+this.state.one_d.temperatureLow}/>
 					<Daily day={toDate(this.state.two_d.time)} icon={this.state.two_d.icon} highlow={this.state.two_d.temperatureHigh+"/"+this.state.two_d.temperatureLow}/>
 					<Daily day={toDate(this.state.three_d.time)} icon={this.state.three_d.icon} highlow={this.state.three_d.temperatureHigh+"/"+this.state.three_d.temperatureLow}/>
+				<div>
+					<Time best={"10:00"}/>
+					</div>
 				</div>
 			</div>
 		);

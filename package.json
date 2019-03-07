@@ -40,6 +40,7 @@
     "eslint": "^3.0.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "flow-bin": "^0.94.0",
     "html-webpack-plugin": "^2.22.0",
     "isparta-loader": "^2.0.0",
     "jquery": "3.1.1",
@@ -74,10 +75,12 @@
     "webpack-dev-server": "^1.15.0"
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
     "openweather-apis": "^4.0.0",
     "preact": "^6.0.0",
     "preact-compat": "^3.0.0",
     "preact-forms-helper": "^0.7.4",
+    "preact-icons": "^2.2.5",
     "preact-router": "^2.0.0",
     "promise-polyfill": "^6.0.2",
     "proptypes": "^0.14.3",
